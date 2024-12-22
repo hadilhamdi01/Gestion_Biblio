@@ -2,15 +2,12 @@ from django.urls import path
 from .views import *
 from . import views
 from django.contrib.auth import views as auth_views
-
+from django.shortcuts import redirect  # Ajoutez cette importation pour la redirection
 
 urlpatterns = [
-    path('',views.home,name='index'),
-    #path('', views.login_view, name='login'),  
-    path('login/', auth_views.LoginView.as_view(template_name='accounts/login.html'), name='login'),
-    #path('', auth_views.LoginView.as_view(template_name='accounts/login.html')), 
-    #path('register/', views.register_view, name='register'),
-    #path('', views.home, name='index'),
-    path('logout/', views.custom_logout, name='logout'),
-    
+    #path('', views.home, name='home'),  # Page d'accueil
+    path('', lambda request: redirect('login')),
+    path('login/', views.CustomLoginView.as_view(), name='login'),  # Connexion avec la vue personnalisée
+    path('logout/', views.custom_logout, name='logout'),  # Déconnexion
+    path('home/index/', views.home, name='home_index'), 
 ]
