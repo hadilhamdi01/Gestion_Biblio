@@ -1,0 +1,7 @@
+.logo {
+    width: 150px; /* Ajustez la taille selon vos besoins */
+    height: auto; /* Maintient le ratio d'aspect */
+    display: block; /* Permet de centrer l'image */
+    margin: 0 auto; /* Centre horizontalement */
+    padding: 10px; /* Ajoute un espace autour de l'image */
+}
