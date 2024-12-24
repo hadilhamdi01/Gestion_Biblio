@@ -8,70 +8,13 @@
     .title-books {
         font-size: 24px;
         font-weight: bold;
-        color: rgb(53, 64, 139);
+        color:rgb(53, 64, 139);
         text-transform: uppercase;
-    }
-
-   
-    /* Barre de recherche */
-    .navbar-search {
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
-    }
-
-    .navbar-search .input-group {
-        width: 100%;
-        max-width: 400px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-
-    .navbar-search .form-control {
-        border:  1px solid #ccc;
-        border-radius:30px;
-        padding: 10px 15px;
-        font-size: 14px;
-        transition: border-color 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .navbar-search .form-control:focus {
-        border-color:rgb(101, 61, 210);
-        box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
-        outline: none;
-    }
-
-    
-
-    .navbar-search button.close {
-        border: 1px solid #ccc;
-        background: transparent;
-        color: #ccc;
-        font-size: 18px;
-        margin-left: 10px;
-        cursor: pointer;
-        transition: color 0.3s ease;
-    }
-    .navbar-search .input-group-text {
-        background-color: #ccc; /* Couleur de fond initiale */
-        color: #666; /* Couleur du texte initiale */
-        border-radius: 30px 0 0 30px;
-        border: 1px solid #ccc;
-        padding: 10px 15px;
-        display: flex;
-        align-items: center;
-        transition: background-color 0.3s ease, color 0.3s ease;
-    }
-
-    /* Transformation en hover pour la loupe */
-    .navbar-search .input-group-prepend:hover .input-group-text {
-        color: #444; /* Texte plus foncé au survol */
-    }
-    .navbar-search button.close:hover {
-        color: #000;
     }
 
     /* Bouton "Add New" */
     .btn-add-new {
+
         border-radius: 20px;
         padding: 8px 20px;
         font-size: 14px;
@@ -83,118 +26,95 @@
         transform: translateY(-2px);
     }
 
-    /* Alignement du header */
-    .header-row {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 20px;
+    /* Barre de recherche */
+    .form-inline input {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 20px;
     }
 
-    .header-left {
-        flex: 1;
+    .form-inline input:focus {
+        border-color: #007bff;
+        outline: none;
     }
-
-    .header-center {
-        flex: 1;
-        text-align: center;
-    }
-
-    .header-right {
-        flex: 1;
-        text-align: right;
-    }
-
     .book-card {
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        padding: 15px;
-        text-align: center;
-        background-color: #fff;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        transition: transform 0.2s ease-in-out;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      padding: 15px;
+      text-align: center;
+      background-color: #fff;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s ease-in-out;
     }
-
     .book-card:hover {
-        transform: translateY(-5px);
+      transform: translateY(-5px);
     }
-
     .book-image {
-        height: 200px;
-        width: auto;
-        margin-bottom: 10px;
+      height: 200px;
+      width: auto;
+      margin-bottom: 10px;
     }
-
     .book-title {
-        font-size: 16px;
-        font-weight: bold;
-        margin-bottom: 5px;
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 5px;
     }
-
     .book-price {
-        color: #ff5722;
-        font-size: 18px;
-        font-weight: bold;
+      color: #ff5722;
+      font-size: 18px;
+      font-weight: bold;
     }
-
     .book-stock {
-        color: #28a745;
-        font-size: 14px;
-        margin-bottom: 10px;
+      color: #28a745;
+      font-size: 14px;
+      margin-bottom: 10px;
     }
-
     .add-to-cart-btn {
-        background-color: #ff5722;
-        color: #fff;
-        border: none;
-        padding: 10px;
-        border-radius: 5px;
-        font-size: 14px;
+      background-color: #ff5722;
+      color: #fff;
+      border: none;
+      padding: 10px;
+      border-radius: 5px;
+      font-size: 14px;
     }
-
-    .add-to-cart-btn:hover {
-        background-color: #e64a19;
-        color: #fff;
-    }
-
     .book-author {
-        font-size: 12px;
-        color: grey;
+        font-size: 12px;  /* Taille plus petite */
+        color: grey;      /* Couleur grise */
+        font-weight: normal;  /* Non gras */
         margin-bottom: 5px;
+      }
+    .add-to-cart-btn:hover {
+      background-color: #e64a19;
+      color: #fff;
     }
-</style>
-{% endblock stylesheets %}
+  </style>
+  {% endblock stylesheets %}
 
 {% block content %}
 
 <div class="container mt-4">
-    <div class="header-row">
-        <div class="header-left">
+    <!-- Barre avec barre de recherche, titre centré et bouton à droite -->
+    <div class="row align-items-center mb-4">
+        <!-- Barre de recherche à gauche -->
+        <div class="col-md-4">
+            <form method="GET" class="form-inline">
+                <input type="text" name="search" class="form-control form-control-sm w-100" placeholder="Search for books..." />
+            </form>
+        </div>
+
+        <!-- Titre au centre -->
+        <div class="col-md-4 text-center">
+            <h3 class="title-books mb-0">Our Books</h3>
+        </div>
+
+        <!-- Bouton à droite -->
+        <div class="col-md-4 text-right">
             <button type="button" class="btn btn-sm btn-primary btn-add-new" data-toggle="modal" data-target="#addBookModal">
                 Add New
             </button>
         </div>
-
-        <div class="header-center">
-            <h3 class="title-books">Our Books</h3>
-        </div>
-         <div class="header-right">
-            <form class="navbar-search">
-                <div class="input-group input-group-alternative input-group-merge">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text"><i class="fas fa-search"></i></span>
-                    </div>
-                    <input class="form-control" placeholder="Search for books..." type="text">
-                </div>
-                <button type="button" class="close" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
-            </form>
-        </div>
     </div>
-</div>
-
-    
 
     <div class="row">
       {% for livre in livres %}
@@ -277,4 +197,19 @@
   <script src="/static/assets/vendor/chart.js/dist/Chart.min.js"></script>
   <script src="/static/assets/vendor/chart.js/dist/Chart.extension.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
-{% endblock javascripts %}
+{% endblock javascripts %}  mais je veux que la barre de recherche et comme ça 
+
+ <!-- Search form -->
+      <form class="navbar-search navbar-search-light form-inline row align-items-center mr-sm-3" id="navbar-search-main  ">
+        <div class="form-group mb-0">
+          <div class="input-group input-group-alternative input-group-merge">
+            <div class="input-group-prepend">
+              <span class="input-group-text"><i class="fas fa-search"></i></span>
+            </div>
+            <input class="form-control" placeholder="Search" type="text">
+          </div>
+        </div>
+        <button type="button" class="close" data-action="search-close" data-target="#navbar-search-main" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </form> 
