@@ -1,0 +1,135 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %} Dashboard {% endblock title %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+<div class="container-fluid mt-4"> <!-- Réduction de l'espace en haut -->
+  <div class="row w-100">
+    <div class="col-12"> <!-- Cette colonne occupera toute la largeur -->
+      <div class="card">
+        <div class="card-header border-0">
+          <div class="row align-items-center">
+            <div class="col">
+              <h3 class="mb-0">Members</h3>
+            </div>
+            <div class="col text-right">
+              <!-- Bouton pour ouvrir le modal -->
+              <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addMemberModal">
+                Add New
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="table-responsive">
+          <!-- Projects table -->
+          <table class="table align-items-center table-flush">
+            <thead class="thead-light">
+              <tr>
+                <th scope="col">Member's Code</th>
+                <th scope="col">Full Name</th>
+                <th scope="col">Number of Loans</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for adherent in adherents %}
+              <tr>
+                <th scope="row">{{ adherent.code_adh }}</th>
+                <td>{{ adherent.nom_adh }}</td>
+                <td>{{ adherent.nbr_emprunts_adh }}</td>
+                <td>
+                  <!-- Actions -->
+                  <i 
+    class="bi bi-pencil text-primary edit-member" 
+    style="cursor: pointer;" 
+    data-id="{{ adherent.code_adh }}" 
+    data-name="{{ adherent.nom_adh }}" 
+    data-loans="{{ adherent.nbr_emprunts_adh }}"
+    data-toggle="modal" 
+    data-target="#editMemberModal">
+  </i> 
+                  &nbsp;
+                  <i class="bi bi-trash text-danger delete-member" data-id="{{ adherent.code_adh }}" style="cursor: pointer;"></i> <!-- Icône de suppression -->
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal pour l'édition d'un membre -->
+<div class="modal fade" id="editMemberModal" tabindex="-1" role="dialog" aria-labelledby="editMemberModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editMemberModalLabel">Edit Member</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form id="editMemberForm" method="POST">
+          {% csrf_token %}
+          <div class="modal-body">
+            <input type="hidden" id="editMemberId" name="code_adh"> <!-- Champ caché pour l'ID -->
+            <div class="form-group">
+              <label for="editMemberName">Full Name</label>
+              <input type="text" class="form-control" id="editMemberName" name="nom_adh" placeholder="Enter full name" required>
+            </div>
+            <div class="form-group">
+              <label for="editMemberLoans">Number of Loans</label>
+              <input type="number" class="form-control" id="editMemberLoans" name="nbr_emprunts_adh" placeholder="Enter number of loans" required>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+<!-- Modal pour l'ajout d'un membre -->
+<div class="modal fade" id="addMemberModal" tabindex="-1" role="dialog" aria-labelledby="addMemberModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addMemberModalLabel">Add New Member</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form method="POST">
+        {% csrf_token %}
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="nom_adh">Full Name</label>
+            <input type="text" class="form-control" id="nom_adh" name="nom_adh" placeholder="Enter full name" required>
+          </div>
+          <div class="form-group">
+            <label for="nbr_emprunts_adh">Number of Loans</label>
+            <input type="number" class="form-control" id="nbr_emprunts_adh" name="nbr_emprunts_adh" placeholder="Enter number of loans" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Save Member</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
+<!-- Specific JS goes HERE -->
+{% block javascripts %}
+  <script src="/static/assets/vendor/chart.js/dist/Chart.min.js"></script>
+  <script src="/static/assets/vendor/chart.js/dist/Chart.extension.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+{% endblock javascripts %}

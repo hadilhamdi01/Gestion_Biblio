@@ -1,11 +1,16 @@
 <nav class="sidenav navbar navbar-vertical  fixed-left  navbar-expand-xs navbar-light bg-white" id="sidenav-main">
   <div class="scrollbar-inner">
     <!-- Brand -->
-    <div class="sidenav-header  align-items-center">
-      <a class="navbar-brand" href="/">
-        <img src="/static/assets/img/brand/blue.png" class="navbar-brand-img" alt="Argon Design - Jinja Template Logo.">
+    <div class="sidenav-header align-items-center" style="margin-bottom: 50px;">
+      <a  href="/">
+        <img src="/static/assets/img/logo.png" 
+            
+             alt="Votre Logo" 
+             style="max-width: 150px; height: auto; display: block; margin: 0 auto;">
       </a>
     </div>
+    
+    
     <div class="navbar-inner">
       <!-- Collapse -->
       <div class="collapse navbar-collapse" id="sidenav-collapse-main">
@@ -18,9 +23,10 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link {% if 'icons' in segment %} active {% endif %}" href="/icons.html">
-              <i class="ni ni-planet text-orange"></i>
-              <span class="nav-link-text">Icons</span>
+            <a class="nav-link {% if 'icons' in segment %} active {% endif %}" href="{% url 'liste_adhérents' %}">
+              <i class="ni ni-single-02 text-yellow"></i>
+              <span class="nav-link-text">Members</span>
+
             </a>
           </li>
           <li class="nav-item">
@@ -31,8 +37,9 @@
           </li>
           <li class="nav-item">
             <a class="nav-link {% if 'profile' in segment %} active {% endif %}" href="/profile.html">
-              <i class="ni ni-single-02 text-yellow"></i>
-              <span class="nav-link-text">Profile</span>
+              <i class="ni ni-planet text-orange"></i>
+              <span class="nav-link-text">Authors</span>
+
             </a>
           </li>
           <li class="nav-item">
@@ -54,12 +61,7 @@
             </a>
           </li>
 
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'logout' %}">
-              <i class="ni ni-user-run text-red"></i>
-              <span class="nav-link-text">Logout</span>
-            </a>
-          </li>            
+            
         </ul>
         <!-- Divider -->
         <hr class="my-3">
