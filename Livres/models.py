@@ -28,7 +28,8 @@ class Livre(models.Model):
     titre_livre = models.CharField(max_length=200)
     nbre_page = models.PositiveIntegerField()
     auteur = models.ForeignKey('Auteur', on_delete=models.CASCADE, related_name='livres')
-    image = models.ImageField(upload_to='livres/', null=True, blank=True)  # Ajout de l'image
+    image = models.ImageField(upload_to='livres/', null=True, blank=True)  # Champ pour l'image
+    prix = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)  # Champ pour le prix
     disponibilite = models.BooleanField(default=True)  # Indique si le livre est disponible
 
     def __str__(self):

@@ -1,0 +1,280 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %} Dashboard {% endblock title %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}
+<style>
+    .title-books {
+        font-size: 24px;
+        font-weight: bold;
+        color: rgb(53, 64, 139);
+        text-transform: uppercase;
+    }
+
+   
+    /* Barre de recherche */
+    .navbar-search {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+    }
+
+    .navbar-search .input-group {
+        width: 100%;
+        max-width: 400px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .navbar-search .form-control {
+        border:  1px solid #ccc;
+        border-radius:30px;
+        padding: 10px 15px;
+        font-size: 14px;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .navbar-search .form-control:focus {
+        border-color:rgb(101, 61, 210);
+        box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
+        outline: none;
+    }
+
+    
+
+    .navbar-search button.close {
+        border: 1px solid #ccc;
+        background: transparent;
+        color: #ccc;
+        font-size: 18px;
+        margin-left: 10px;
+        cursor: pointer;
+        transition: color 0.3s ease;
+    }
+    .navbar-search .input-group-text {
+        background-color: #ccc; /* Couleur de fond initiale */
+        color: #666; /* Couleur du texte initiale */
+        border-radius: 30px 0 0 30px;
+        border: 1px solid #ccc;
+        padding: 10px 15px;
+        display: flex;
+        align-items: center;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    /* Transformation en hover pour la loupe */
+    .navbar-search .input-group-prepend:hover .input-group-text {
+        color: #444; /* Texte plus foncé au survol */
+    }
+    .navbar-search button.close:hover {
+        color: #000;
+    }
+
+    /* Bouton "Add New" */
+    .btn-add-new {
+        border-radius: 20px;
+        padding: 8px 20px;
+        font-size: 14px;
+        transition: background-color 0.3s, transform 0.2s;
+    }
+
+    .btn-add-new:hover {
+        background-color: #0056b3;
+        transform: translateY(-2px);
+    }
+
+    /* Alignement du header */
+    .header-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
+
+    .header-left {
+        flex: 1;
+    }
+
+    .header-center {
+        flex: 1;
+        text-align: center;
+    }
+
+    .header-right {
+        flex: 1;
+        text-align: right;
+    }
+
+    .book-card {
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        padding: 15px;
+        text-align: center;
+        background-color: #fff;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s ease-in-out;
+    }
+
+    .book-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .book-image {
+        height: 200px;
+        width: auto;
+        margin-bottom: 10px;
+    }
+
+    .book-title {
+        font-size: 16px;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    .book-price {
+        color: #ff5722;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .book-stock {
+        color: #28a745;
+        font-size: 14px;
+        margin-bottom: 10px;
+    }
+
+    .add-to-cart-btn {
+        background-color: #ff5722;
+        color: #fff;
+        border: none;
+        padding: 10px;
+        border-radius: 5px;
+        font-size: 14px;
+    }
+
+    .add-to-cart-btn:hover {
+        background-color: #e64a19;
+        color: #fff;
+    }
+
+    .book-author {
+        font-size: 12px;
+        color: grey;
+        margin-bottom: 5px;
+    }
+</style>
+{% endblock stylesheets %}
+
+{% block content %}
+
+<div class="container mt-4">
+    <div class="header-row">
+        <div class="header-left">
+            <button type="button" class="btn btn-sm btn-primary btn-add-new" data-toggle="modal" data-target="#addBookModal">
+                Add New
+            </button>
+        </div>
+
+        <div class="header-center">
+            <h3 class="title-books">Our Books</h3>
+        </div>
+         <div class="header-right">
+            <form class="navbar-search">
+                <div class="input-group input-group-alternative input-group-merge">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fas fa-search"></i></span>
+                    </div>
+                    <input class="form-control" placeholder="Search for books..." type="text">
+                </div>
+                <button type="button" class="close" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+    
+
+    <div class="row">
+      {% for livre in livres %}
+        <div class="col-md-4 col-lg-3 mb-4">
+          <div class="book-card">
+            <img src="{{ livre.image.url }}" alt="{{ livre.image}}" class="book-image">
+            <div class="book-author">{{ livre.auteur.nom_auteur }} {{ livre.auteur.prenom_auteur }}</div>
+
+            <div class="book-title">{{ livre.titre_livre }}</div>
+            <div class="book-price">{{ livre.prix }} TND</div>
+            <div class="book-stock">{% if livre.disponibilite %}✔ Disponible{% else %}❌ Indisponible{% endif %}</div>
+            {% comment %} <button class="add-to-cart-btn">Ajouter au panier</button> {% endcomment %}
+          </div>
+        </div>
+      {% endfor %}
+
+
+
+
+
+  <!-- Modal pour ajouter un livre -->
+<div class="modal fade" id="addBookModal" tabindex="-1" role="dialog" aria-labelledby="addBookModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addBookModalLabel">Add New Book</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form method="POST" enctype="multipart/form-data"> <!-- Formulaire pour ajouter un livre -->
+          {% csrf_token %}
+          <div class="modal-body">
+            <div class="form-group">
+              <label for="titre_livre">Title</label>
+              <input type="text" class="form-control" id="titre_livre" name="titre_livre" placeholder="Enter book title" required>
+            </div>
+            <div class="form-group">
+                <label for="auteur">Author</label>
+                <select class="form-control" id="auteur" name="auteur" required>
+                    {% for auteur in auteurs %}
+                        <option value="{{ auteur.code_auteur }}">{{ auteur.nom_auteur }} {{ auteur.prenom_auteur }}</option>
+                    {% empty %}
+                        <option disabled>No authors available</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="form-group">
+              <label for="nbre_page">Number of Pages</label>
+              <input type="number" class="form-control" id="nbre_page" name="nbre_page" placeholder="Enter number of pages" required>
+            </div>
+            <div class="form-group">
+              <label for="prix">Price</label>
+              <input type="number" class="form-control" id="prix" name="prix" placeholder="Enter price" step="0.01" required>
+            </div>
+            <div class="form-group">
+              <label for="image">Image</label>
+              <input type="file" class="form-control" id="image" name="image" accept="image/*">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Save Book</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+
+      
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
+<!-- Specific JS goes HERE -->
+{% block javascripts %}
+  <script src="/static/assets/vendor/chart.js/dist/Chart.min.js"></script>
+  <script src="/static/assets/vendor/chart.js/dist/Chart.extension.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+{% endblock javascripts %}

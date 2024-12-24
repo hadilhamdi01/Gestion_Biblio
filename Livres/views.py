@@ -1,11 +1,15 @@
 from django.contrib.auth import logout
-from django.shortcuts import render  # Ajoutez cette ligne
+from django.shortcuts import render  
 from .models import Adherent
 from django.shortcuts import redirect
 from django.contrib.auth.views import LoginView
 from .forms import CustomLoginForm
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib import messages
+from .models import Livre, Auteur
+from .forms import LivreForm, AuteurForm
 
 # Vue de la page d'accueil
 def home(request):
@@ -68,4 +72,49 @@ def edit_member(request):
         except Adherent.DoesNotExist:
             return JsonResponse({'error': 'Member not found'}, status=404)
     return JsonResponse({'error': 'Invalid request'}, status=400)
+
+
+# Liste des livres
+def list_books(request):
+      if request.method == "POST":
+        titre_livre = request.POST.get('titre_livre')
+        code_auteur = request.POST.get('auteur')  # Récupère l'auteur sélectionné
+        nbre_page = request.POST.get('nbre_page')
+        prix = request.POST.get('prix')
+        disponibilite= request.POST.get('disponibilite')
+        image = request.FILES.get('image')  # Récupère le fichier image
+
+        # Vérifiez si l'auteur existe dans la base de données
+        auteur = Auteur.objects.get(code_auteur=code_auteur)
+
+        # Créez un nouveau livre
+        Livre.objects.create(
+            titre_livre=titre_livre,
+            auteur=auteur,
+            nbre_page=nbre_page,
+            prix=prix,
+            image=image,
+           # disponibilite=disponibilite,
+        )
+        return redirect('list_books')  # Redirigez après la soumission du formulaire
+
+      auteurs = Auteur.objects.all()  # Récupère tous les auteurs pour l'affichage
+      print(auteurs)
+      livres = Livre.objects.all()  # Optionnel : Récupérez les livres pour les afficher
+   
+      return render(request, 'home/list_books.html', {'livres': livres, 'auteurs': auteurs})
+
+
+
+def authors_view(request):
+    if request.method == "POST":
+        nom_auteur = request.POST.get('nom_auteur')
+        prenom_auteur = request.POST.get('prenom_auteur')
+        
+        # Création de l'auteur
+        Auteur.objects.create(nom_auteur=nom_auteur, prenom_auteur=prenom_auteur)
+        return redirect('authors_view')  # Redirigez vers la même page après l'ajout
+
+    auteurs = Auteur.objects.all()  # Récupérez les auteurs pour les afficher
+    return render(request, 'home/authors.html', {'auteurs': auteurs})
 
