@@ -19,6 +19,10 @@ urlpatterns = [
     path('edit-member/', edit_member, name='edit_member'),
     path('home/list_books/', views.list_books, name='list_books'), 
     path('authors/', views.authors_view, name='authors_view'), 
+    path('book/<int:code_livre>/', views.book_detail, name='book_detail'),
+    path('book/update/<int:code_livre>/', views.book_update, name='book_update'),
+    path('book/delete/<int:code_livre>/', views.book_delete, name='book_delete'),
+
 
 
 

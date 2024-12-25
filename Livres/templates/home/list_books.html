@@ -121,13 +121,14 @@
       {% for livre in livres %}
         <div class="col-md-4 col-lg-3 mb-4">
           <div class="book-card">
+            <a href="{% url 'book_detail' livre.code_livre %}">
             <img src="{{ livre.image.url }}" alt="{{ livre.image}}" class="book-image">
             <div class="book-author">{{ livre.auteur.nom_auteur }} {{ livre.auteur.prenom_auteur }}</div>
-
             <div class="book-title">{{ livre.titre_livre }}</div>
             <div class="book-price">{{ livre.prix }} TND</div>
             <div class="book-stock">{% if livre.disponibilite %}✔ Disponible{% else %}❌ Indisponible{% endif %}</div>
             {% comment %} <button class="add-to-cart-btn">Ajouter au panier</button> {% endcomment %}
+        </a>
           </div>
         </div>
       {% endfor %}

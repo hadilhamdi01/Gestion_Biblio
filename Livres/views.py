@@ -17,22 +17,20 @@ def home(request):
 
 # Déconnexion de l'utilisateur
 def custom_logout(request):
-    logout(request)  # Déconnecte l'utilisateur
-    return redirect('login')  # Redirige vers la page de connexion après déconnexion
+    logout(request) 
+    return redirect('login')  
 
 # Vue personnalisée pour la connexion
 class CustomLoginView(LoginView):
-    template_name = 'accounts/login.html'  # Chemin vers votre template de connexion
-    authentication_form = CustomLoginForm  # Formulaire personnalisé pour la connexion
+    template_name = 'accounts/login.html'  
+    authentication_form = CustomLoginForm  
 
 
 def liste_adhérents(request):
     if request.method == "POST":
-        # Récupération des données du formulaire
         nom_adh = request.POST.get("nom_adh")
         nbr_emprunts_adh = request.POST.get("nbr_emprunts_adh")
 
-        # Création d'un nouvel adhérent
         if nom_adh and nbr_emprunts_adh:
             Adherent.objects.create(
                 nom_adh=nom_adh,
@@ -74,20 +72,16 @@ def edit_member(request):
     return JsonResponse({'error': 'Invalid request'}, status=400)
 
 
-# Liste des livres
+""" # Liste des livres
 def list_books(request):
       if request.method == "POST":
         titre_livre = request.POST.get('titre_livre')
-        code_auteur = request.POST.get('auteur')  # Récupère l'auteur sélectionné
+        code_auteur = request.POST.get('auteur') 
         nbre_page = request.POST.get('nbre_page')
         prix = request.POST.get('prix')
         disponibilite= request.POST.get('disponibilite')
-        image = request.FILES.get('image')  # Récupère le fichier image
-
-        # Vérifiez si l'auteur existe dans la base de données
+        image = request.FILES.get('image') 
         auteur = Auteur.objects.get(code_auteur=code_auteur)
-
-        # Créez un nouveau livre
         Livre.objects.create(
             titre_livre=titre_livre,
             auteur=auteur,
@@ -96,25 +90,96 @@ def list_books(request):
             image=image,
            # disponibilite=disponibilite,
         )
-        return redirect('list_books')  # Redirigez après la soumission du formulaire
+        return redirect('list_books')  
 
-      auteurs = Auteur.objects.all()  # Récupère tous les auteurs pour l'affichage
+      auteurs = Auteur.objects.all()  
       print(auteurs)
-      livres = Livre.objects.all()  # Optionnel : Récupérez les livres pour les afficher
+      livres = Livre.objects.all()  
    
-      return render(request, 'home/list_books.html', {'livres': livres, 'auteurs': auteurs})
+      return render(request, 'home/list_books.html', {'livres': livres, 'auteurs': auteurs}) """
 
 
 
+
+def list_books(request):
+    if request.method == "POST":
+        titre_livre = request.POST.get('titre_livre')
+        code_auteur = request.POST.get('auteur')
+        nbre_page = request.POST.get('nbre_page')
+        prix = request.POST.get('prix')
+        disponibilite = request.POST.get('disponibilite')
+        image = request.FILES.get('image')
+        auteur = Auteur.objects.get(code_auteur=code_auteur)
+        Livre.objects.create(
+            titre_livre=titre_livre,
+            auteur=auteur,
+            nbre_page=nbre_page,
+            prix=prix,
+            image=image,
+        )
+        return redirect('list_books')
+
+    # Capture de la recherche
+    query = request.GET.get('search')  # "q" correspond au nom de l'input de recherche
+    if query:
+        livres = Livre.objects.filter(titre_livre__icontains=query)  # Recherche insensible à la casse
+    else:
+        livres = Livre.objects.all()
+
+    auteurs = Auteur.objects.all()
+    return render(request, 'home/list_books.html', {'livres': livres, 'auteurs': auteurs, 'query': query})
+
+
+
+
+
+
+#afficher les auteurs
 def authors_view(request):
     if request.method == "POST":
         nom_auteur = request.POST.get('nom_auteur')
         prenom_auteur = request.POST.get('prenom_auteur')
         
-        # Création de l'auteur
         Auteur.objects.create(nom_auteur=nom_auteur, prenom_auteur=prenom_auteur)
-        return redirect('authors_view')  # Redirigez vers la même page après l'ajout
+        return redirect('authors_view')  
 
-    auteurs = Auteur.objects.all()  # Récupérez les auteurs pour les afficher
+    auteurs = Auteur.objects.all()  
     return render(request, 'home/authors.html', {'auteurs': auteurs})
 
+#detail livre
+def book_detail(request, code_livre):
+    livre = get_object_or_404(Livre, code_livre=code_livre)
+    auteurs = Auteur.objects.all()
+    return render(request, 'home/book_detail.html', {'livre': livre,  'auteurs': auteurs})
+
+#update livre 
+def book_update(request, code_livre):
+    livre = get_object_or_404(Livre, code_livre=code_livre)
+    if request.method == 'POST':
+        titre = request.POST.get('titre_livre')
+        auteur_id = request.POST.get('auteur')
+        prix = request.POST.get('prix')
+        disponibilite = request.POST.get('disponibilite') == "True"
+        livre.titre_livre = titre
+        livre.auteur_id = auteur_id
+        livre.prix = prix
+        livre.disponibilite = disponibilite
+
+        if 'image' in request.FILES:
+            livre.image = request.FILES['image']
+
+        livre.save()
+        messages.success(request, 'Livre mis à jour avec succès !')
+        return redirect('book_detail', code_livre=code_livre)
+    return render(request, 'book_update.html', {'livre': livre})
+
+
+#suppression livre 
+def book_delete(request, code_livre):
+    livre = get_object_or_404(Livre, code_livre=code_livre)
+    
+    livre.delete()
+    
+    messages.success(request, "Le livre a été supprimé avec succès.")
+    
+    return redirect('list_books')
