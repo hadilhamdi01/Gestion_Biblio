@@ -30,13 +30,17 @@ def liste_adhérents(request):
     if request.method == "POST":
         nom_adh = request.POST.get("nom_adh")
         nbr_emprunts_adh = request.POST.get("nbr_emprunts_adh")
+        image = request.FILES.get('image')
 
-        if nom_adh and nbr_emprunts_adh:
-            Adherent.objects.create(
+        #if nom_adh and nbr_emprunts_adh and image:
+        
+        adherent = Adherent.objects.create(
                 nom_adh=nom_adh,
-                nbr_emprunts_adh=int(nbr_emprunts_adh)
+                nbr_emprunts_adh=int(nbr_emprunts_adh),
+                image=image
             )
-            return redirect("liste_adhérents")
+            
+        return redirect("liste_adhérents")
     adherents = Adherent.objects.all().order_by('nom_adh')
     return render(request, 'home/adherents.html', {'adherents': adherents})
 
@@ -60,10 +64,12 @@ def edit_member(request):
             member_id = request.POST.get('code_adh')
             name = request.POST.get('nom_adh')
             loans = request.POST.get('nbr_emprunts_adh')
+            image = request.FILES.get('image')
 
             member = Adherent.objects.get(code_adh=member_id)
             member.nom_adh = name
             member.nbr_emprunts_adh = loans
+            member.image=image
             member.save()
 
             return JsonResponse({'success': True})
@@ -120,9 +126,9 @@ def list_books(request):
         return redirect('list_books')
 
     # Capture de la recherche
-    query = request.GET.get('search')  # "q" correspond au nom de l'input de recherche
+    query = request.GET.get('search') 
     if query:
-        livres = Livre.objects.filter(titre_livre__icontains=query)  # Recherche insensible à la casse
+        livres = Livre.objects.filter(titre_livre__icontains=query)  
     else:
         livres = Livre.objects.all()
 
@@ -132,19 +138,26 @@ def list_books(request):
 
 
 
-
-
 #afficher les auteurs
 def authors_view(request):
     if request.method == "POST":
         nom_auteur = request.POST.get('nom_auteur')
         prenom_auteur = request.POST.get('prenom_auteur')
-        
-        Auteur.objects.create(nom_auteur=nom_auteur, prenom_auteur=prenom_auteur)
-        return redirect('authors_view')  
+        image = request.FILES.get('image')  # Récupérer l'image seulement si elle est envoyée
 
-    auteurs = Auteur.objects.all()  
+        # Créer l'auteur avec l'image
+        Auteur.objects.create(
+            nom_auteur=nom_auteur,
+            prenom_auteur=prenom_auteur,
+            image=image
+        )
+        return redirect('authors_view')
+
+    auteurs = Auteur.objects.all()
     return render(request, 'home/authors.html', {'auteurs': auteurs})
+
+
+
 
 #detail livre
 def book_detail(request, code_livre):
@@ -183,3 +196,28 @@ def book_delete(request, code_livre):
     messages.success(request, "Le livre a été supprimé avec succès.")
     
     return redirect('list_books')
+
+#Modifier un auteur 
+def edit_author(request):
+    if request.method == 'POST':
+        author_id = request.POST.get('code_auteur')
+        nom_auteur = request.POST.get('nom_auteur')
+        prenom_auteur = request.POST.get('prenom_auteur')
+        image = request.FILES.get('image')
+
+        try:
+            auteur = get_object_or_404(Auteur, code_auteur=author_id)
+            auteur.nom_auteur = nom_auteur
+            auteur.prenom_auteur = prenom_auteur
+
+            if image:
+                auteur.image = image
+
+            auteur.save()
+            messages.success(request, "Author updated successfully!")
+            return redirect('authors_view')
+        except Auteur.DoesNotExist:
+            messages.error(request, "Author not found.")
+            return redirect('authors_view')
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+

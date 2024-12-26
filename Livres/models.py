@@ -17,6 +17,7 @@ class Adherent(models.Model):
     code_adh = models.AutoField(primary_key=True)
     nom_adh = models.CharField(max_length=100)
     nbr_emprunts_adh = models.PositiveIntegerField(default=0)
+    image = models.ImageField(upload_to='adherents/', null=True, blank=True )
 
     def __str__(self):
         return self.nom_adh
@@ -28,9 +29,11 @@ class Livre(models.Model):
     titre_livre = models.CharField(max_length=200)
     nbre_page = models.PositiveIntegerField()
     auteur = models.ForeignKey('Auteur', on_delete=models.CASCADE, related_name='livres')
-    image = models.ImageField(upload_to='livres/', null=True, blank=True)  # Champ pour l'image
-    prix = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)  # Champ pour le prix
-    disponibilite = models.BooleanField(default=True)  # Indique si le livre est disponible
+    image = models.ImageField(upload_to='livres/', null=True, blank=True)  
+    prix = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)  
+    disponibilite = models.BooleanField(default=True)  
+    total_exemplaires = models.PositiveIntegerField(default=3)  
+    exemplaires_disponibles = models.PositiveIntegerField(default=1)
 
     def __str__(self):
         return self.titre_livre
@@ -44,7 +47,6 @@ class Emprunt(models.Model):
     date_retour = models.DateField()
 
     def save(self, *args, **kwargs):
-        # Calcul automatique de la date de retour à 15 jours après l'emprunt
         if not self.date_retour:
             self.date_retour = self.date_emprunt + timedelta(days=15)
         super().save(*args, **kwargs)
@@ -58,6 +60,7 @@ class Auteur(models.Model):
     code_auteur = models.AutoField(primary_key=True)
     nom_auteur = models.CharField(max_length=100)
     prenom_auteur = models.CharField(max_length=100)
+    image = models.ImageField(upload_to='auteurs/', null=True, blank=True)
 
     def __str__(self):
         return f"{self.nom_auteur} {self.prenom_auteur}"

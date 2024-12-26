@@ -28,7 +28,7 @@
           <table class="table align-items-center table-flush">
             <thead class="thead-light">
               <tr>
-                <th scope="col">Member's Code</th>
+                <th scope="col">Member</th>
                 <th scope="col">Full Name</th>
                 <th scope="col">Number of Loans</th>
                 <th scope="col">Actions</th>
@@ -37,7 +37,14 @@
             <tbody>
               {% for adherent in adherents %}
               <tr>
-                <th scope="row">{{ adherent.code_adh }}</th>
+           <td>
+                <div class="row align-items-center">
+                  <div class="col-auto">
+                    <!-- Avatar -->
+                    <img alt="Image placeholder" src="{{ adherent.image.url }}" class="avatar rounded-circle">
+                  </div>
+                </td> 
+                
                 <td>{{ adherent.nom_adh }}</td>
                 <td>{{ adherent.nbr_emprunts_adh }}</td>
                 <td>
@@ -73,10 +80,10 @@
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <form id="editMemberForm" method="POST">
+        <form id="editMemberForm" method="POST"  enctype="multipart/form-data">
           {% csrf_token %}
           <div class="modal-body">
-            <input type="hidden" id="editMemberId" name="code_adh"> <!-- Champ caché pour l'ID -->
+            <input type="hidden" id="editMemberId" name="code_adh"> 
             <div class="form-group">
               <label for="editMemberName">Full Name</label>
               <input type="text" class="form-control" id="editMemberName" name="nom_adh" placeholder="Enter full name" required>
@@ -84,6 +91,10 @@
             <div class="form-group">
               <label for="editMemberLoans">Number of Loans</label>
               <input type="number" class="form-control" id="editMemberLoans" name="nbr_emprunts_adh" placeholder="Enter number of loans" required>
+            </div>
+            <div class="form-group">
+              <label for="image">Image :</label>
+            <input type="file" name=" image" required>
             </div>
           </div>
           <div class="modal-footer">
@@ -105,7 +116,7 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <form method="POST">
+      <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="modal-body">
           <div class="form-group">
@@ -115,6 +126,10 @@
           <div class="form-group">
             <label for="nbr_emprunts_adh">Number of Loans</label>
             <input type="number" class="form-control" id="nbr_emprunts_adh" name="nbr_emprunts_adh" placeholder="Enter number of loans" required>
+          </div>
+          <div class="form-group">
+            <label for="image">Image :</label>
+            <input type="file" name="image" required>
           </div>
         </div>
         <div class="modal-footer">

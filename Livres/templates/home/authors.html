@@ -26,31 +26,37 @@
         <div class="table-responsive">
           <!-- Projects table -->
           <table class="table align-items-center table-flush">
-            <thead class="thead-light">
+            <thead class="thead-light">  
               <tr>
-                <th scope="col">Member's Code</th>
-                <th scope="col">Full Name</th>
-                <th scope="col">Number of Loans</th>
+                <th scope="col">Author</th>
+                <th scope="col">First Name</th>
+                <th scope="col">Last Name</th>
                 <th scope="col">Actions</th>
               </tr>
             </thead>
             <tbody>
               {% for auteur in auteurs %}
               <tr>
-                <th scope="row">{{ auteur.code_auteur }}</th>
+                <td>
+                  <div class="row align-items-center">
+                    <div class="col-auto">
+                      <!-- Avatar -->
+                      <img alt="Image placeholder" src="{{ auteur.image.url }}" class="avatar rounded-circle">
+                    </div>
+                  </td> 
                 <td>{{ auteur.nom_auteur }}</td>
                 <td>{{ auteur.prenom_auteur }}</td>
                 <td>
                   <!-- Actions -->
                   <i 
-    class="bi bi-pencil text-primary edit-member" 
+    class="bi bi-pencil text-primary edit-author" 
     style="cursor: pointer;" 
-    data-id="{{ adherent.code_adh }}" 
-    data-name="{{ adherent.nom_adh }}" 
-    data-loans="{{ adherent.nbr_emprunts_adh }}"
+    data-id="{{ auteur.code_auteur }}" 
+    data-nom="{{ auteur.nom_auteur }}" 
+    data-prenom="{{ auteur.prenom_auteur }}" 
     data-toggle="modal" 
-    data-target="#editMemberModal">
-  </i> 
+    data-target="#editAuthorModal">
+  </i>
                   &nbsp;
                   <i class="bi bi-trash text-danger delete-member" data-id="{{ adherent.code_adh }}" style="cursor: pointer;"></i> <!-- Icône de suppression -->
                 </td>
@@ -63,6 +69,42 @@
     </div>
   </div>
 </div>
+<!-- Modal pour modifier un auteur -->
+<div class="modal fade" id="editAuthorModal" tabindex="-1" role="dialog" aria-labelledby="editAuthorModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editAuthorModalLabel">Edit Author</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form method="POST" enctype="multipart/form-data" action="{% url 'edit_author' %}" id="editAuthorForm">
+        {% csrf_token %}
+        <div class="modal-body">
+          <input type="hidden" id="editAuthorId" name="code_auteur"> <!-- ID caché -->
+          <div class="form-group">
+            <label for="editNomAuteur">First Name</label>
+            <input type="text" class="form-control" id="editNomAuteur" name="nom_auteur" required>
+          </div>
+          <div class="form-group">
+            <label for="editPrenomAuteur">Last Name</label>
+            <input type="text" class="form-control" id="editPrenomAuteur" name="prenom_auteur" required>
+          </div>
+          <div class="form-group">
+            <label for="editImageAuteur">Author Image</label>
+            <input type="file" class="form-control-file" id="editImageAuteur" name="image">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 <!-- Modal pour ajouter un auteur -->
 <div class="modal fade" id="addAuthorModal" tabindex="-1" role="dialog" aria-labelledby="addAuthorModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -73,7 +115,7 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <form method="POST"> <!-- Formulaire pour ajouter un auteur -->
+      <form method="POST" enctype="multipart/form-data"> <!-- Formulaire pour ajouter un auteur -->
         {% csrf_token %}
         <div class="modal-body">
           <div class="form-group">
@@ -84,6 +126,10 @@
             <label for="prenom_auteur">Last Name</label>
             <input type="text" class="form-control" id="prenom_auteur" name="prenom_auteur" placeholder="Enter last name" required>
           </div>
+          <div class="form-group">
+            <label for="image">Author Image</label>
+            <input type="file" class="form-control-file" id="image" name="image">
+          </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -93,6 +139,7 @@
     </div>
   </div>
 </div>
+
 
     </div>
   </div>

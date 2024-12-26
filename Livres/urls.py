@@ -22,6 +22,7 @@ urlpatterns = [
     path('book/<int:code_livre>/', views.book_detail, name='book_detail'),
     path('book/update/<int:code_livre>/', views.book_update, name='book_update'),
     path('book/delete/<int:code_livre>/', views.book_delete, name='book_delete'),
+    path('edit-author/', edit_author, name='edit_author'),
 
 
 

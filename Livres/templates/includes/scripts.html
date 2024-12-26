@@ -81,5 +81,22 @@
   <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
     
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Attache un événement de clic à chaque icône crayon
+      const editIcons = document.querySelectorAll('.edit-author');
+      editIcons.forEach(icon => {
+        icon.addEventListener('click', function() {
+          const authorId = this.dataset.id;
+          const authorNom = this.dataset.nom;
+          const authorPrenom = this.dataset.prenom;
   
-
+          // Remplir les champs du formulaire dans le modal
+          document.getElementById('editAuthorId').value = authorId;
+          document.getElementById('editNomAuteur').value = authorNom;
+          document.getElementById('editPrenomAuteur').value = authorPrenom;
+        });
+      });
+    });
+  </script>
+  

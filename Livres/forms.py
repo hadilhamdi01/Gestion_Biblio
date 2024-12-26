@@ -15,4 +15,4 @@ class LivreForm(forms.ModelForm):
 class AuteurForm(forms.ModelForm):
     class Meta:
         model = Auteur
-        fields = ['nom_auteur', 'prenom_auteur']
+        fields = ['nom_auteur', 'prenom_auteur', 'image']
