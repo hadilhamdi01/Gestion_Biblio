@@ -1,6 +1,8 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from datetime import timedelta
+from datetime import timedelta, date
+from django.core.exceptions import ValidationError
+
 
 
 # Model de user pour l'authentification
@@ -33,7 +35,7 @@ class Livre(models.Model):
     prix = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)  
     disponibilite = models.BooleanField(default=True)  
     total_exemplaires = models.PositiveIntegerField(default=3)  
-    exemplaires_disponibles = models.PositiveIntegerField(default=1)
+    exemplaires_disponibles = models.PositiveIntegerField(default=3)
 
     def __str__(self):
         return self.titre_livre
@@ -46,10 +48,18 @@ class Emprunt(models.Model):
     date_emprunt = models.DateField(auto_now_add=True)
     date_retour = models.DateField()
 
+    def clean(self):
+        if Emprunt.objects.filter(adherent=self.adherent, livre=self.livre, date_retour__gte=date.today()).exists():
+            raise ValidationError("Vous avez déjà emprunté ce livre.")
+
     def save(self, *args, **kwargs):
         if not self.date_retour:
             self.date_retour = self.date_emprunt + timedelta(days=15)
         super().save(*args, **kwargs)
+        # Mettre à jour le nombre d'emprunts de l'adhérent
+        self.adherent.nbr_emprunts_adh += 1
+        self.adherent.save()
+
 
     def __str__(self):
         return f"Emprunt: {self.adherent} -> {self.livre}"
@@ -64,3 +74,6 @@ class Auteur(models.Model):
 
     def __str__(self):
         return f"{self.nom_auteur} {self.prenom_auteur}"
+
+
+

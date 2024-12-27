@@ -8,8 +8,10 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
-from .models import Livre, Auteur
+from .models import Livre, Auteur, Emprunt
 from .forms import LivreForm, AuteurForm
+from datetime import timedelta, datetime, date
+
 
 # Vue de la page d'accueil
 def home(request):
@@ -221,3 +223,68 @@ def edit_author(request):
             return redirect('authors_view')
     return JsonResponse({'error': 'Invalid request'}, status=400)
 
+#creer emprunts
+def emprunt(request):
+    return render(request, 'home/emprunt.html')
+
+
+#creation d'un emprunt
+def creer_emprunt(request):
+    if request.method == "POST":
+        adherent_id = request.POST.get("adherent_id")
+        livre_id = request.POST.get("livre_id")
+
+        # Récupérer l'adhérent et le livre
+        try:
+            adherent = Adherent.objects.get(code_adh=adherent_id)
+            livre = Livre.objects.get(code_livre=livre_id)
+        except (Adherent.DoesNotExist, Livre.DoesNotExist):
+            messages.error(request, "Adhérent ou livre introuvable.")
+            return redirect("creer_emprunt")
+
+        # Vérifier si le livre est disponible
+        if livre.exemplaires_disponibles <= 0:
+            messages.error(request, "Ce livre n'est plus disponible.")
+            return redirect("creer_emprunt")
+         # Vérifier si l'adhérent a déjà emprunté ce livre
+        deja_emprunte = Emprunt.objects.filter(adherent=adherent, livre=livre, date_retour__gte=date.today()).exists()
+        if deja_emprunte:
+            return JsonResponse({'erreur': 'Vous avez déjà emprunté ce livre.'}, status=400)
+
+        # Créer l'emprunt
+        emprunt = Emprunt.objects.create(
+            adherent=adherent,
+            livre=livre,
+            date_retour=(datetime.now() + timedelta(days=15)).date()
+        )
+
+        # Réduire le nombre d'exemplaires disponibles
+        livre.exemplaires_disponibles -= 1
+        livre.save()
+
+        messages.success(request, f"Emprunt de '{livre.titre_livre}' créé avec succès.")
+        return redirect("emprunt")
+
+    # Liste des adhérents et livres disponibles
+    adherents = Adherent.objects.all()
+    livres = Livre.objects.filter(exemplaires_disponibles__gt=0)
+    return render(request, "home/creer_emprunt.html", {"adherents": adherents, "livres": livres})
+# afficher emprunts
+def emprunt(request):
+    emprunts = Emprunt.objects.select_related('adherent', 'livre').all()
+     # Grouper les emprunts par livre
+    #grouped_emprunts = {}
+    grouped_emprunts = {}
+    emprunts = Emprunt.objects.all()
+    for emprunt in emprunts:
+        if emprunt.livre not in grouped_emprunts:
+            grouped_emprunts[emprunt.livre] = []
+        grouped_emprunts[emprunt.livre].append(emprunt)
+
+    return render(request, "home/emprunt.html", {"grouped_emprunts": grouped_emprunts})
+# detail emprunt
+def detail_emprunt(request):
+    # Récupérer tous les emprunts
+    emprunts = Emprunt.objects.select_related('adherent', 'livre').all()
+    
+    return render(request, 'home/detail_emprunt.html', {'emprunts': emprunts})

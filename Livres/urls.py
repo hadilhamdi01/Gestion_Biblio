@@ -23,6 +23,10 @@ urlpatterns = [
     path('book/update/<int:code_livre>/', views.book_update, name='book_update'),
     path('book/delete/<int:code_livre>/', views.book_delete, name='book_delete'),
     path('edit-author/', edit_author, name='edit_author'),
+    path('home/emprunt/', views.emprunt, name='emprunt'), 
+    path('creer_emprunt/', views.creer_emprunt, name='creer_emprunt'),
+    path('detail_emprunt/', views.detail_emprunt, name='detail_emprunt'),
+
 
 
 

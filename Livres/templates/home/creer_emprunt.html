@@ -1,0 +1,69 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %} Créer un emprunt {% endblock title %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+  <!-- Page content -->
+  <div class="container mt-7">
+    <!-- Form -->
+    <div class="row justify-content-center">
+      <div class="col-lg-6 col-md-8">
+        <div class="card bg-secondary border-0">
+          <div class="card-header bg-transparent pb-5">
+            <h1 class="text-center">Cc</h1>
+          </div>
+          <div class="card-body px-lg-5 py-lg-5">
+            <form method="post">
+              {% csrf_token %}
+              
+              <!-- Sélection d'adhérent -->
+              <div class="form-group">
+                <div class="input-group input-group-merge input-group-alternative mb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text"><i class="ni ni-single-02"></i></span>
+                  </div>
+                  <select class="form-control" name="adherent_id" id="adherent_id" required>
+                    <option value="" disabled selected>-- Choose a member --</option>
+                    {% for adherent in adherents %}
+                    <option value="{{ adherent.code_adh }}">{{ adherent.nom_adh }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+
+              <!-- Sélection de livre -->
+              <div class="form-group">
+                <div class="input-group input-group-merge input-group-alternative mb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text"><i class="ni ni-books"></i></span>
+                  </div>
+                  <select class="form-control" name="livre_id" id="livre_id" required>
+                    <option value="" disabled selected>-- Choose a book --</option>
+                    {% for livre in livres %}
+                    <option value="{{ livre.code_livre }}">{{ livre.titre_livre }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+
+              <!-- Bouton de soumission -->
+              <div class="text-center">
+                <button type="submit" class="btn btn-primary mt-4">Create</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}
+
+<!-- Specific JS goes HERE -->
+{% block javascripts %}
+<script src="/static/assets/vendor/chart.js/dist/Chart.min.js"></script>
+<script src="/static/assets/vendor/chart.js/dist/Chart.extension.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+{% endblock javascripts %}
