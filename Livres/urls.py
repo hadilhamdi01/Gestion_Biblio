@@ -25,7 +25,10 @@ urlpatterns = [
     path('edit-author/', edit_author, name='edit_author'),
     path('home/emprunt/', views.emprunt, name='emprunt'), 
     path('creer_emprunt/', views.creer_emprunt, name='creer_emprunt'),
-    path('detail_emprunt/', views.detail_emprunt, name='detail_emprunt'),
+    path('detail_emprunt/<int:emprunt_id>/', views.detail_emprunt, name='detail_emprunt'),
+    path('retour/<int:emprunt_id>/', views.retour_livre, name='retour_livre'),
+    path('supprimer-emprunt/<int:emprunt_id>/', views.supprimer_emprunt, name='supprimer_emprunt'),
+
 
 
 

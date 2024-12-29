@@ -11,6 +11,8 @@ from django.contrib import messages
 from .models import Livre, Auteur, Emprunt
 from .forms import LivreForm, AuteurForm
 from datetime import timedelta, datetime, date
+from django.utils.timezone import now
+
 
 
 # Vue de la page d'accueil
@@ -283,8 +285,44 @@ def emprunt(request):
 
     return render(request, "home/emprunt.html", {"grouped_emprunts": grouped_emprunts})
 # detail emprunt
-def detail_emprunt(request):
-    # Récupérer tous les emprunts
-    emprunts = Emprunt.objects.select_related('adherent', 'livre').all()
-    
-    return render(request, 'home/detail_emprunt.html', {'emprunts': emprunts})
+def detail_emprunt(request, emprunt_id):
+    emprunt = get_object_or_404(Emprunt, id=emprunt_id)
+    return render(request, 'home/detail_emprunt.html', {'emprunt': emprunt})
+
+#Retourner livre
+def retour_livre(request, emprunt_id):
+    # Récupérer l'emprunt
+    emprunt = get_object_or_404(Emprunt, id=emprunt_id)
+
+    # Vérifier si le livre a déjà été retourné
+    if emprunt.date_retour_effective:
+        messages.warning(request, "Ce livre a déjà été retourné.")
+        return redirect('emprunt')
+
+    # Marquer le livre comme retourné
+    emprunt.date_retour_effective = now()
+    emprunt.save()
+
+    # Augmenter le nombre d'exemplaires disponibles pour le livre
+    livre = emprunt.livre
+    livre.exemplaires_disponibles += 1
+    livre.save()
+
+    # Réduire le nombre d'emprunts actifs de l'adhérent
+    adherent = emprunt.adherent
+    adherent.nbr_emprunts_adh -= 1
+    adherent.save()
+
+    messages.success(request, f"Le livre '{livre.titre_livre}' a été retourné avec succès.")
+    return redirect('emprunt')
+
+
+#supprimer emprunt
+def supprimer_emprunt(request, emprunt_id):
+    if request.method == "POST":
+        emprunt = get_object_or_404(Emprunt, id=emprunt_id)
+        emprunt.delete()
+        messages.success(request, "L'emprunt a été supprimé avec succès.")
+        return redirect('emprunt')  # Remplacez 'liste_emprunts' par le nom de votre URL pour la liste des emprunts
+    messages.error(request, "Action non autorisée.")
+    return redirect('emprunt')

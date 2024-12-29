@@ -19,38 +19,52 @@
         <div class="card-header border-0">
           <div class="row align-items-center">
             <div class="col">
-            <a href="{% url 'list_books' %}" class="btn btn-light mb-3">
+            <a href="{% url 'emprunt' %}" class="btn btn-light mb-3">
                 <i class="fas fa-arrow-left"></i> 
             </a>
         </div>
             <div class="container my-5"  style="margin-left: 8rem;">
                 <div class="row">
                     <div class="col-md-4">
-                        <img src="" alt="" class="img-fluid">
+                      <img src="{{ emprunt.livre.image.url }}" alt="{{ emprunt.livre.titre_livre }}" class="img-fluid">
                     </div>
                     <div class="col-md-8">
                         <h6 class="text-uppercase text-muted"></h6>
-                        <h2></h2>
-                        <p><strong>ISBN:</strong> 978222649369</p>
-                        <h3 class="text-warning">{{ livre.prix }} TND</h3>
+                        <h2>{{ emprunt.livre.titre_livre }}</h2>
+                        <p><strong> Member:</strong> {{ emprunt.adherent.nom_adh }}</p>
+                        <p><strong>Borrowing date:</strong> {{ emprunt.date_emprunt }}</p>
+                        <p><strong>Expected return date:</strong> {{ emprunt.date_retour }}</p>
             
-                        <div class="my-4">
-                            
-                        </div>
+                        
             
+
+
+
+
+                        {% if not emprunt.date_retour_effective %}
+                        <form action="{% url 'retour_livre' emprunt.id %}" method="post" style="display:inline;">
+                            {% csrf_token %}
+
                         <button class="btn btn-dark btn-lg">
-                            Update
+                            Return book
                         </button>
-                        <a href="#" class="btn btn-danger btn-lg" 
-                        onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce livre ?');">
-                         Delete
-                     </a>
+                      </form>
+                        {% else %}
+                        <span class="text-success"><i class="fas fa-check"></i> Returned</span>
+
+                           
+                        {% endif %}
                      
             
-                        <div class="mt-4">
-                                <span class="text-success"><i class="fas fa-check"></i> En Stock</span>
-                                <span class="text-danger"><i class="fas fa-times"></i> En Rupture de Stock</span>
-                        </div>
+                        <td class="text-right">
+                          <form action="{% url 'supprimer_emprunt' emprunt.id %}" method="POST" style="display: inline;">
+                              {% csrf_token %}
+                              <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet emprunt ?')">
+                                  Supprimer
+                              </button>
+                          </form>
+                      </td>
+                      
                     </div>
                 </div>
             </div>

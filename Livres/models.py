@@ -47,6 +47,7 @@ class Emprunt(models.Model):
     livre = models.ForeignKey(Livre, on_delete=models.CASCADE, related_name='emprunts')
     date_emprunt = models.DateField(auto_now_add=True)
     date_retour = models.DateField()
+    date_retour_effective = models.DateField(null=True, blank=True)
 
     def clean(self):
         if Emprunt.objects.filter(adherent=self.adherent, livre=self.livre, date_retour__gte=date.today()).exists():

@@ -45,8 +45,8 @@
                   <th scope="col" class="sort" data-sort="name">Book</th>
                   <th scope="col" class="sort" data-sort="budget">Budget</th>
                   <th scope="col" class="sort" data-sort="status">Status</th>
-                  <th scope="col">Users</th>
-                  <th scope="col" class="sort" data-sort="completion">Completion</th>
+                  <th scope="col">Members</th>
+                  <th scope="col" class="sort" data-sort="completion">Actions</th>
                   <th scope="col"></th>
                 </tr>
               </thead>
@@ -67,18 +67,25 @@
                     </div>
                   </th>
                   <td class="budget">
-                    $2500 USD
+                  {{livre.prix}}TND
                   </td>
+                 
                   <td>
                     <span class="badge badge-dot mr-4">
-                      <i class="bg-warning"></i>
-                      <span class="status">pending</span>
+                      {% if livre.exemplaires_disponibles > 0 %}
+                        <i class="bg-success"></i>
+                        <span class="status">Disponible</span>
+                      {% else %}
+                        <i class="bg-danger"></i>
+                        <span class="status">Non disponible</span>
+                      {% endif %}
                     </span>
                   </td>
+                  
                   <td>
                     <div class="avatar-group">
                       {% for emprunt in emprunts %}
-                      <a href="{% url 'detail_emprunt' %}" class="avatar avatar-sm rounded-circle" data-toggle="tooltip" data-original-title="{{ emprunt.adherent.nom_adh }}">
+                      <a href="{% url 'detail_emprunt' emprunt.id %}" class="avatar avatar-sm rounded-circle" data-toggle="tooltip" data-original-title="{{ emprunt.adherent.nom_adh }}">
                         <img alt="Image placeholder" src="{{ emprunt.adherent.image.url }}">
                     </a>
 
